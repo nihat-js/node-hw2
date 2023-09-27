@@ -1,6 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const uuid_1 = require("uuid");
+const { v4 } = require("uuid");
 var CurrencyEnum;
 (function (CurrencyEnum) {
     CurrencyEnum[CurrencyEnum["USD"] = 0] = "USD";
@@ -8,7 +7,7 @@ var CurrencyEnum;
 })(CurrencyEnum || (CurrencyEnum = {}));
 class Transaction {
     constructor({ amount, currency }) {
-        this.id = +(0, uuid_1.v4)();
+        this.id = +v4();
         this.amount = amount;
         this.currency = currency;
     }
@@ -17,15 +16,16 @@ class Card {
     constructor() {
         this.transactions = [];
     }
-    // public addTransaction(amount: number, currency: CurrencyEnum) : string ;
-    // public addTransaction( transaction :  ITransaction) :number;
-    addTransaction(transaction, amount, currency) {
+    addTransaction(arg1, arg2, arg3) {
         let ts;
-        if (!transaction) {
-            ts = new Transaction(transaction);
+        if (typeof arg1 === 'number' && arg2 !== undefined) {
+            ts = new Transaction({ amount: arg1, currency: arg2 });
+        }
+        else if (typeof arg1 !== 'number' && arg2 === undefined) {
+            ts = new Transaction(arg1);
         }
         else {
-            ts = new Transaction({ amount, currency });
+            throw Error("error happened");
         }
         this.transactions.push(ts);
         return ts.id;
@@ -37,4 +37,6 @@ class Card {
         return this.transactions.reduce((a, b) => b.currency === currency ? a + b.amount : a, 0);
     }
 }
-module.exports = Card;
+module.exports = {
+    Card
+};

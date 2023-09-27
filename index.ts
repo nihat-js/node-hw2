@@ -1,4 +1,4 @@
-import { v4 } from "uuid"
+const { v4 } = require("uuid")
 
 enum CurrencyEnum {
   USD,
@@ -13,7 +13,7 @@ interface ITransactionWithId extends ITransaction {
   id: number,
 }
 
-class Transaction   {
+class Transaction {
   id: number
   amount: number
   currency: CurrencyEnum
@@ -34,27 +34,33 @@ class Card {
   }
 
 
-  // public addTransaction(amount: number, currency: CurrencyEnum) : string ;
-  // public addTransaction( transaction :  ITransaction) :number;
-  public addTransaction( transaction : ITransaction, amount : number ,currency : number) : number {
-    let ts
-    if (!transaction){
-      ts = new Transaction(transaction) 
-    }else{
-      ts = new  Transaction({amount,currency}) 
-    }
-    this.transactions.push(ts)
-    return ts.id    
+  public addTransaction(amount: number, currency: CurrencyEnum): number;
+  public addTransaction(transaction: ITransaction): number;
+  public addTransaction(arg1: number | ITransaction, arg2?: CurrencyEnum, arg3?: number): number {
+    let ts;
 
+    if (typeof arg1 === 'number' && arg2 !== undefined) {
+      ts = new Transaction({ amount: arg1, currency: arg2 });
+    } else if (typeof arg1 !== 'number' && arg2 === undefined) {
+      ts = new Transaction(arg1);
+    } else {
+      throw Error("error happened")
+    }
+
+    this.transactions.push(ts);
+    return ts.id;
   }
+
 
 
   getTransaction(id: number) {
     return this.transactions.find(el => el.id === id)
   }
-  getBalance(currency : CurrencyEnum){
-    return this.transactions.reduce((a,b) => b.currency === currency  ? a + b.amount  : a,0)
+  getBalance(currency: CurrencyEnum) {
+    return this.transactions.reduce((a, b) => b.currency === currency ? a + b.amount : a, 0)
   }
 }
 
-module.exports = Card
+module.exports = {
+  Card
+}
